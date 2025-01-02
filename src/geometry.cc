@@ -14,6 +14,8 @@ MyGeometry::MyGeometry(G4UIExecutive *ui_): regoWidth(0.05*m), aluWidth(0.01*m),
 	ui = ui;
 	materials = new Materials();
 	DefineCommands();
+
+	checkOverLaps = false;
 }
 	
 
@@ -43,7 +45,7 @@ G4VPhysicalVolume *MyGeometry::Construct()
 	// Create world of simulation.
 	solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld);
 	logicWorld = new G4LogicalVolume(solidWorld,materials->GetMaterial("G4_Galactic"),"logicWorld");
-	physWorld = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), logicWorld, "physWorld", 0, false, 0, true);
+	physWorld = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), logicWorld, "physWorld", 0, false, 0, checkOverLaps);
 	
 	// Create the multilayers with varying densities of the lunar regolith
 	G4double totalDepth=5*m;
@@ -62,11 +64,9 @@ G4VPhysicalVolume *MyGeometry::Construct()
 		ss_rego_id << idepth;
 		ss_rego_id >> str_rego_id;
 		
-		//G4cout << "depth = " << depth << " " << "solidRego"+G4String(str_rego_id) << " " << GetRegoAtDepth(depth)->GetDensity() << G4endl;
 		G4Box *solidRegoSlice = new G4Box("solidRego"+G4String(str_rego_id), 10.0*m, 10.0*m, sliceThickness);
 		G4LogicalVolume* logicRegoSlice = new G4LogicalVolume(solidRegoSlice,materials->GetRegoAtDepth(depth),"logicRego"+G4String(str_rego_id));
-		//G4LogicalVolume* logicRegoSlice = new G4LogicalVolume(solidRegoSlice,materials->GetMaterial("G4_Galactic"),"logicRego"+G4String(str_rego_id));
-		G4VPhysicalVolume* physRegoSlice = new G4PVPlacement(0, G4ThreeVector(0., 0., depth), logicRegoSlice, "physRego"+G4String(str_rego_id), logicWorld, false, 0, true);
+		G4VPhysicalVolume* physRegoSlice = new G4PVPlacement(0, G4ThreeVector(0., 0., depth), logicRegoSlice, "physRego"+G4String(str_rego_id), logicWorld, false, 0, checkOverLaps);
 	
 		solidRego.push_back(solidRegoSlice);
 		logicRego.push_back(logicRegoSlice);
@@ -83,7 +83,7 @@ G4VPhysicalVolume *MyGeometry::Construct()
 	solidAir = new G4Sphere("solidAir", 0.0*m, innerRadius, 0*deg,360*deg, 0*deg, 90*deg);
 	logicAir = new G4LogicalVolume(solidAir,materials->GetMaterial("G4_AIR"),"logicAir");
 	//logicAir = new G4LogicalVolume(solidAir,materials->GetMaterial("G4_Galactic"),"logicAir");
-	physAir = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicAir, "physAir", logicWorld, false, 0, true);
+	physAir = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicAir, "physAir", logicWorld, false, 0, checkOverLaps);
 	
 	
 	G4double out_radius1 = innerRadius+thickDome1;
@@ -93,24 +93,24 @@ G4VPhysicalVolume *MyGeometry::Construct()
 	
 	solidDome1 = new G4Sphere("solidDome1", innerRadius, out_radius1, 0*deg, 360*deg, 0*deg, 90*deg);
 	logicDome1 = new G4LogicalVolume(solidDome1,materials->GetMaterial("G4_Galactic"),"logicDome1");
-	physDome1 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome1, "physDome1", logicWorld, false, 0, true);
+	physDome1 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome1, "physDome1", logicWorld, false, 0, checkOverLaps);
 
 	G4double thicknessground = 4.0*mm;
 	solidGround = new G4Tubs("solidGround",0.0*m,innerRadius,thicknessground,0*deg,360*deg);
 	logicGround = new G4LogicalVolume(solidGround,materials->GetRegoAtDepth(depth),"logicGround");
-	physGround = new G4PVPlacement(0, G4ThreeVector(0., 0., sliceThickness-thicknessground), logicGround, "physGround", logicRego[0], false, 0, true);
+	physGround = new G4PVPlacement(0, G4ThreeVector(0., 0., sliceThickness-thicknessground), logicGround, "physGround", logicRego[0], false, 0, checkOverLaps);
 
 	solidDome2 = new G4Sphere("solidDome2", out_radius1, out_radius2, 0*deg, 360*deg, 0*deg, 90*deg);
 	logicDome2 = new G4LogicalVolume(solidDome2,materials->GetMaterial("G4_Galactic"),"logicDome2");
-	physDome2 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome2, "physDome2", logicWorld, false, 0, true);
+	physDome2 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome2, "physDome2", logicWorld, false, 0, checkOverLaps);
 
 	solidDome3 = new G4Sphere("solidDome3", out_radius2, out_radius3, 0*deg, 360*deg, 0*deg, 90*deg);
 	logicDome3 = new G4LogicalVolume(solidDome3,materials->GetMaterial("G4_Galactic"),"logicDome3");
-	physDome3 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome3, "physDome3", logicWorld, false, 0, true);
+	physDome3 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome3, "physDome3", logicWorld, false, 0, checkOverLaps);
 	
 	solidDome4 = new G4Sphere("solidDome4", out_radius3, out_radius4, 0*deg, 360*deg, 0*deg, 90*deg);
 	logicDome4 = new G4LogicalVolume(solidDome4,materials->GetMaterial("G4_Galactic"),"logicDome4");
-	physDome4 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome4, "physDome4", logicWorld, false, 0, true);
+	physDome4 = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.0*m), logicDome4, "physDome4", logicWorld, false, 0, checkOverLaps);
 	
 
 
@@ -126,7 +126,7 @@ G4VPhysicalVolume *MyGeometry::Construct()
 
  		fContainer_logic = new G4LogicalVolume(containerSolid, materials->GetMaterial("G4_Galactic"), "logicPhantom");
 
-		new G4PVPlacement(nullptr, G4ThreeVector(0.0*m,0.0*m,fPhantomSize.z()/2 ), fContainer_logic, "PhantomPhysical", logicAir, false, 0);
+		new G4PVPlacement(nullptr, G4ThreeVector(0.0*m,0.0*m,fPhantomSize.z()/2 ), fContainer_logic, "PhantomPhysical", logicAir, false, checkOverLaps);
 		//new G4PVPlacement(nullptr, G4ThreeVector(0.0*m,0.0*m,fPhantomSize.z()/2 ), fContainer_logic, "physicPhantom", logicWorld, false, 0);
 
 		fContainer_logic->SetOptimisation(TRUE);
@@ -149,11 +149,10 @@ G4VPhysicalVolume *MyGeometry::Construct()
 		//logicPhantom = new G4LogicalVolume(solidPhantom, materials->GetMaterial("G4_Galactic"), "logicPhantom");
 		logicPhantom = new G4LogicalVolume(solidPhantom, materials->GetMaterial("IcruMat"), "logicPhantom");
 		//physPhantom = new G4PVPlacement(0, G4ThreeVector(0,-0.001*m+rPhantom), logicPhantom, "physPhantom", logicAir, false, 0, true);
-		physPhantom = new G4PVPlacement(0, G4ThreeVector(0.,0.*m,rPhantom), logicPhantom, "physPhantom", logicAir, false, 0, true);
+		physPhantom = new G4PVPlacement(0, G4ThreeVector(0.,0.*m,rPhantom), logicPhantom, "physPhantom", logicAir, false, 0, checkOverLaps);
 		//physPhantom = new G4PVPlacement(0, G4ThreeVector(0.,0.*m,rPhantom), logicPhantom, "physPhantom", logicWorld, false, 0, true);
 	}
 
-	G4cout << "Geometry created" << G4endl;
 	
 	return physWorld;
 }
@@ -198,7 +197,6 @@ void MyGeometry::ConstructSDandField()
 	myScorer->RegisterPrimitive(totalSurfFlux);
 	logicAir->SetSensitiveDetector(myScorer);
 
-	G4cout << "ConstructSDandField" << G4endl;
 }
 
 void MyGeometry::SetHumanPhantom(G4String phantom_) {phantomType = phantom_;}

@@ -60,6 +60,7 @@ class MyGeometry : public G4VUserDetectorConstruction
 	
 	private:
 		G4UIExecutive *ui;
+		G4bool checkOverLaps;
 		
 		// rPhantom stands for the radius of the Human Phantom
 		//void DefineMaterials();

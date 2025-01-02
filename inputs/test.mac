@@ -1,0 +1,49 @@
+/SIM/scoring/phantom IcruSphere
+
+/run/initialize
+
+/SIM/gcr/gcrFile ../inputs/gcr_2020-02-01_2021-02-01.csv
+/SIM/scoring/sampleSize 100
+/SIM/scoring/resDir test
+
+/SIM/geometry/domeIn/radius 2000
+/SIM/geometry/dome1/thick 3.9999999999999996
+/SIM/geometry/dome1/material Al2219
+/SIM/geometry/dome2/thick 1.0
+/SIM/geometry/dome2/material G4_Galactic
+/SIM/geometry/dome3/thick 1.0
+/SIM/geometry/dome3/material G4_Galactic
+/SIM/geometry/dome4/thick 1.0
+/SIM/geometry/dome4/material G4_Galactic
+
+/SIM/scoring/radbeam 550 mm
+
+/SIM/generate/rat 1 1
+/SIM/generate/rat 2 0
+/SIM/generate/rat 3 0
+/SIM/generate/rat 4 0
+/SIM/generate/rat 5 0
+/SIM/generate/rat 6 0
+/SIM/generate/rat 7 0
+/SIM/generate/rat 8 0
+/SIM/generate/rat 9 0
+/SIM/generate/rat 10 0
+/SIM/generate/rat 11 0
+/SIM/generate/rat 12 0
+/SIM/generate/rat 13 0
+/SIM/generate/rat 14 0
+/SIM/generate/rat 15 0
+/SIM/generate/rat 16 0
+/SIM/generate/rat 17 0
+/SIM/generate/rat 18 0
+/SIM/generate/rat 19 0
+/SIM/generate/rat 20 0
+/SIM/generate/rat 21 0
+/SIM/generate/rat 22 0
+/SIM/generate/rat 23 0
+/SIM/generate/rat 24 0
+/SIM/generate/rat 25 0
+/SIM/generate/rat 26 0
+/SIM/generate/rat 27 0
+/SIM/generate/rat 28 0
+/run/beamOn 100
