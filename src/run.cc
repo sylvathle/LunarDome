@@ -36,6 +36,7 @@ G4Run* MyRunAction::GenerateRun()
 	
 	phantomType = detectorConstruction->GetPhantomType();
 	//SetResultsDirectory("results/"+phantomType+G4String("/"));
+	G4cout << "GenerateRun " << phantomType << G4endl;
 	if (phantomType=="ICRP145") 
 	{	
 		fRun = new TETRun();
@@ -71,8 +72,8 @@ void MyRunAction::BeginOfRunAction(const G4Run* aRun)
 	
 	const MyGeometry *detectorConstruction = static_cast<const MyGeometry*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 
-        //G4String rd_label = G4String(std::to_string(CLHEP::RandFlat::shootInt(1e9)));
-	//labelCSV = labelCSV + G4String("-") + rd_label;
+        G4String rd_label = G4String(std::to_string(CLHEP::RandFlat::shootInt(1e9)));
+	labelCSV = labelCSV + G4String("-") + rd_label;
 	
 	if (phantomType=="ICRP145") 
 	{
@@ -185,8 +186,6 @@ void MyRunAction::EndOfRunAction(const G4Run* aRun)
  	// get the run ID
  	fRunID = aRun->GetRunID();
 
-	G4cout << "Data scored in " << result_dir << labelCSV << G4endl;
-
 }
 
 void MyRunAction::SetResultsDirectory(G4String dir)
@@ -196,6 +195,7 @@ void MyRunAction::SetResultsDirectory(G4String dir)
 	phantomType = detectorConstruction->GetPhantomType();
 
 	auto man = G4AnalysisManager::Instance();
+	G4cout << "Set Dir Phantom " << phantomType << " " << dir << G4endl;
 	result_dir = "../results/"+phantomType+G4String("/")+dir+G4String("/");
 	
 	createDirectories(result_dir);

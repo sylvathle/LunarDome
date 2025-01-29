@@ -108,67 +108,34 @@ G4bool SBG4PSSphereSurfaceFlux::ProcessHits(G4Step* aStep, G4TouchableHistory*)
       G4StepPoint* thisStep = nullptr;
       if(dirFlag == fFlux_In)
       {
-	//G4cout << "fluxIN" << G4endl;
-  	//G4cout << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << " " << preStep->GetKineticEnergy() << " " << preStep->GetPosition() << G4endl;
         thisStep = preStep;
       }
       else if(dirFlag == fFlux_Out)
       {
-	//G4cout << "fluxOut" << G4endl;
-  	//G4cout << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << " " << preStep->GetKineticEnergy() << " " << preStep->GetPosition() << G4endl;
         thisStep = aStep->GetPostStepPoint();
-        //G4cout << "fFlux_out " << dirFlag << " " << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << " " << preStep->GetKineticEnergy() << " " << preStep->GetPosition() << G4endl;
       }
       else
       {
-        //G4cout << "return " << dirFlag << " " << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << " " << preStep->GetKineticEnergy() << " " << preStep->GetPosition() << G4endl;
         return false;
       }
 
       if (thisStep->GetPosition()[2]<0) {return false;}
      
-      //G4cout << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << " " << thisStep->GetKineticEnergy() << " " << thisStep->GetPosition() << " " << dirFlag << " " << fDirection << G4endl;
-
-      /*G4TouchableHandle theTouchable = thisStep->GetTouchableHandle();
-      G4ThreeVector pdirection       = thisStep->GetMomentS32 16531.8 (-381.973,135.314,292.894umDirection();
-      G4ThreeVector localdir =
-        theTouchable->GetHistory()->GetTopTransform().TransformAxis(pdirection);
-      G4double localdirL2 = localdir.x() * localdir.x() +
-                            localdir.y() * localdir.y() +
-                            localdir.z() * localdir.z();
-      G4ThreeVector stppos1 = aStep->GetPreStepPoint()->GetPosition();
-      G4ThreeVector localpos1 =
-        theTouchable->GetHistory()->GetTopTransform().TransformPoint(stppos1);
-      G4double localR2 = localpos1.x() * localpos1.x() +
-                         localpos1.y() * localpos1.y() +
-                         localpos1.z() * localpos1.z();
-      G4double anglefactor =
-        (localdir.x() * localpos1.x() + localdir.y() * localpos1.y() +
-         localdir.z() * localpos1.z()) /
-        std::sqrt(localdirL2) / std::sqrt(localR2);*/
-
-      //if(anglefactor < 0.0) anglefactor *= -1.0;
+      /*if (aStep->GetTrack()->GetParticleDefinition() == G4Electron::Electron())
+      {
+        G4double kE = aStep->GetTrack()->GetKineticEnergy();
+        //if ((kE<80*keV) && (kE>50*keV)) 
+        {
+          aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+          return true;
+        }
+      }*/
 
       fluxInfo flux = fluxInfo(aStep->GetTrack()->GetParticleDefinition()->GetParticleName(),preStep->GetKineticEnergy());
       
-      //G4cout << aStep->GetTrack()->GetParticleDefinition()->GetParticleName()<< " " << preStep->GetKineticEnergy() << G4endl;
-
-      //G4double current = 1.0 / anglefactor;
-      //if(weighted)
-      //  current *= thisStep->GetWeight();  // Flux (Particle Weight)
-      //if(divideByArea)                     // Flux with angle.
-      //{
-      //  G4double radi = sphereSolid->GetInnerRadius();
-      //  G4double dph  = sphereSolid->GetDeltaPhiAngle() / radian;
-      //  G4double stth = sphereSolid->GetStartThetaAngle() / radian;
-      //  G4double enth = stth + sphereSolid->GetDeltaThetaAngle() / radian;
-      //  current /= radi * radi * dph * (-std::cos(enth) + std::cos(stth));
-      //}
       index++;
 
-      //G4int index = GetIndex(aStep);
       EvtMap->add(index, flux);
-      //G4cout << "event ADDED " << G4endl;
     }
   }
 
@@ -183,11 +150,9 @@ G4int SBG4PSSphereSurfaceFlux::IsSelectedSurface(G4Step* aStep,
   G4double kCarTolerance =
     G4GeometryTolerance::GetInstance()->GetSurfaceTolerance();
 
-  //G4cout << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << " " << aStep->GetPreStepPoint()->GetKineticEnergy() << G4endl;
 
   if(aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
   {
-    //G4cout << "---Pre " <<  sphereSolid->GetName() <<  G4endl;
     // Entering Geometry
     G4ThreeVector stppos1 = aStep->GetPreStepPoint()->GetPosition();
     G4ThreeVector localpos1 =
@@ -195,11 +160,7 @@ G4int SBG4PSSphereSurfaceFlux::IsSelectedSurface(G4Step* aStep,
     G4double localR2 = localpos1.x() * localpos1.x() +
                        localpos1.y() * localpos1.y() +
                        localpos1.z() * localpos1.z();
-    // G4double InsideRadius2 =
-    //  sphereSolid->GetInsideRadius()*sphereSolid->GetInsideRadius();
-    // if(std::fabs( localR2 - InsideRadius2 ) < kCarTolerance ){
     G4double InsideRadius = sphereSolid->GetOuterRadius();
-    //G4cout << "-- " << InsideRadius << G4endl;
     if(localR2 >
          (InsideRadius - kCarTolerance) * (InsideRadius - kCarTolerance) &&
        localR2 <
@@ -208,30 +169,6 @@ G4int SBG4PSSphereSurfaceFlux::IsSelectedSurface(G4Step* aStep,
       return fFlux_In;
     }
   }
-
-  /*if(aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary)
-  {
-    //G4cout << "---Post " << sphereSolid->GetName() << G4endl;
-    // Exiting Geometry
-    G4ThreeVector stppos2 = aStep->GetPostStepPoint()->GetPosition();
-    G4ThreeVector localpos2 =
-      theTouchable->GetHistory()->GetTopTransform().TransformPoint(stppos2);
-    G4double localR2 = localpos2.x() * localpos2.x() +
-                       localpos2.y() * localpos2.y() +
-                       localpos2.z() * localpos2.z();
-    // G4double InsideRadius2 =
-    //  sphereSolid->GetInsideRadius()*sphereSolid->GetInsideRadius();
-    // if(std::facb(localR2 - InsideRadius2) ) < kCarTolerance ){
-    G4double InsideRadius = sphereSolid->GetOuterRadius();
-    //G4cout << "-- kCarTolerance " << kCarTolerance << "  Inside radius " << InsideRadius << " localR2 " << localR2 << G4endl;
-    if(localR2 >
-         (InsideRadius - kCarTolerance) * (InsideRadius - kCarTolerance) &&
-       localR2 <
-         (InsideRadius + kCarTolerance) * (InsideRadius + kCarTolerance))
-    {
-      return fFlux_Out;
-    }
-  }*/
 
   return -1;
 }

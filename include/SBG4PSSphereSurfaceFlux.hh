@@ -31,6 +31,7 @@
 
 #include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
+#include "G4Electron.hh"
 
 #include "G4Sphere.hh"
 #include "G4PSDirectionFlag.hh"

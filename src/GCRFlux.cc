@@ -5,7 +5,7 @@ GCRFlux::GCRFlux():ions(getIons())
 {
 	DefineCommands();
 
-	SetGCRcsv("../inputs/gcr_2020-02-01_2021-02-01.csv");
+	SetGCRcsv("../scripts/gcr_2020-02-01_2021-02-01.csv");
 }
 
 
@@ -21,7 +21,7 @@ void GCRFlux::LoadGCRFromCSV()
     	std::string line;
 
     	if (!file.is_open()) {
-    	    std::cerr << "Error opening file: " << csvFile << std::endl;
+    	    std::cerr << "EError opening file: " << csvFile << std::endl;
     	    return;
     	}
 
@@ -99,7 +99,7 @@ void GCRFlux::LoadGCRFromCSV()
 		listParticleWeight.push_back(listIntegratedFluxParticleKind[i]/total_particles);
 	}
 
-	//G4cout << "Total flux (#/m^2/sr/s) = " << total_particles << G4endl;
+	G4cout << "Total flux (#/m^2/sr/s) = " << total_particles << G4endl;
 
 	nIonsKind = ionsName.size();
 }
@@ -128,7 +128,7 @@ void GCRFlux::DefineCommands()
 
 	auto& gcrcsvCmd = fMessenger->DeclareMethod("gcrFile",&GCRFlux::SetGCRcsv,"Set GCR source, csv format");
 	gcrcsvCmd.SetParameterName("gcrFile", true);
-	gcrcsvCmd.SetDefaultValue("../inputs/gcr_2020-02-01_2021-02-01.csv");
+	gcrcsvCmd.SetDefaultValue("../scripts/gcr_2020-02-01_2021-02-01.csv");
 
 }
 
