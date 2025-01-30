@@ -49,7 +49,7 @@ res_dir = "../results/ICRP145/"
 res_dir = "./"
 
 
-flux_csv = "flux.csv"
+flux_csv = "data/flux.csv"
 
 df = pd.read_csv(res_dir+"/"+flux_csv)
 

@@ -5,7 +5,7 @@ GCRFlux::GCRFlux():ions(getIons())
 {
 	DefineCommands();
 
-	SetGCRcsv("../scripts/gcr_2020-02-01_2021-02-01.csv");
+	SetGCRcsv("../inputs/gcr_2020-02-01_2021-02-01.csv");
 }
 
 

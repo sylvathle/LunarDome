@@ -218,7 +218,7 @@ def nsimul_particles(df_ICRP,df_ICRU):
     df_nparticles.insert(0,'Z',[toZA[p][0] for p in parts])
     df_nparticles = df_nparticles.transpose()
     
-    df_nparticles.to_csv("../figures/number_sim_particles.csv",index=True)
+    df_nparticles.to_csv("data/number_sim_particles.csv",index=True)
 
 def  print_icrp_stats(df_icrp):
 
@@ -271,7 +271,7 @@ def  print_icrp_stats(df_icrp):
 def plot_DE_Q_Particles(df_ICRP):
 
 
-    df_weights = pd.read_csv("weightParticles.csv")
+    df_weights = pd.read_csv("data/weightParticles.csv")
     df_weights = df_weights.sort_values(by="Z")
     sumweights = df_weights["wP"].sum()
     df_weights["percentwP"] = df_weights["wP"]/sumweights*100
@@ -678,11 +678,11 @@ def model_dose(df_ICRP,df_ICRU):
             print ("\t",xxx[i],yyyede[i],yyyede[i]/yyyede0)
             earthlevel=False
 
-    df_matthiae = pd.read_csv("EDE_matthiae.csv")
+    df_matthiae = pd.read_csv("data/EDE_matthiae.csv")
     df_matthiae["EDE"] = df_matthiae["EDE"]*365
     df_matthiae["std"] = df_matthiae["std"]*365
 
-    df_dobynde = pd.read_csv("DE_Dobynde.csv")
+    df_dobynde = pd.read_csv("data/DE_Dobynde.csv")
     df_dobynde["DE"] = df_dobynde["DE"]*10
     diff_depth = [0]
     depth = df_dobynde["depth"].tolist()

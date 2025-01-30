@@ -9,7 +9,7 @@ plt.rcParams['ytick.labelsize'] = 13
 
 
 # Load overall Icru sphere data simulated
-df_Icru = pd.read_csv("Icrudose.csv")
+df_Icru = pd.read_csv("data/Icrudose.csv")
 
 print_icru_stats(df_Icru)
 
@@ -18,7 +18,7 @@ plot_icru_contributions(df_Icru)
 
 
 
-df_ICRP = pd.read_csv("ICRPdose.csv")
+df_ICRP = pd.read_csv("data/ICRPdose.csv")
 
 print_icrp_stats(df_ICRP)
 

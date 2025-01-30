@@ -1,4 +1,5 @@
-/SIM/scoring/phantom IcruSphere
+#/SIM/scoring/phantom IcruSphere
+/SIM/scoring/phantom ICRP145
 
 /run/initialize
 
@@ -16,7 +17,7 @@
 /SIM/geometry/dome4/thick 1.0
 /SIM/geometry/dome4/material G4_Galactic
 
-/SIM/scoring/radbeam 550 mm
+/SIM/scoring/radbeam 2206 mm
 
 /SIM/generate/rat 1 1
 /SIM/generate/rat 2 0
