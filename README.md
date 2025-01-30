@@ -69,7 +69,7 @@ If Nsample = 10 and 100 particles where simulated, then 10 runs will be saved.
 ```
 /SIM/geometry/domeIn/radius innerRadius
 ```
-Give the inner radius of the dome in milimeters.
+Give the inner radius of the dome in milimeters, make sure it is bigger than the human phantom used.
 
 
 ```
@@ -84,7 +84,7 @@ Give the thickness of the first layer in milimeters.
 material here informs the material to be used for the first layer (e.g. G4\_Galactic, Al2219, RegoAp17 ....)
 All native geant4 materials can be used plus some materials defined for this projects which name can be found in the ../src/material.cc file.
 
-For the two last commands up to 4 layers can be stacked, informing their thickness and material. No layer can take thickness 0, therefore if some should not be used they can be replaced by the material of the world (generally G4\_Galactic).
+For the two last commands up to 4 layers can be stacked, informing their thickness and material. To do this change dome1 by dome2, dome3 or dome4 in the command. No layer can take thickness 0, therefore if some should not be used they can be replaced by the material of the world (generally G4\_Galactic).
 
 
 ```
@@ -113,6 +113,7 @@ A folder called figures must be created at the same level than the analysis fold
 ```
 cd LunarDome
 mkdir figures
+cd ../analysis
 ```
 
 The analysis related to doses calculations is run with:
@@ -122,7 +123,7 @@ python3 plotAnalysis.py
 ```
 
 This file used the Icrudose.csv and ICRPdose.csv files to generate the figures. 
-Other input are used like EDE\_matthiae.csv to compare the results from other studies.
+Other input are used like EDE\_matthiae.csv to compare the results from other studies or information on the organ mass, weighting tissue factors, total fluxes of the particles are also used.
 
 The analysis related to fluxes can be run with:
 
