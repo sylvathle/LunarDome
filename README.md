@@ -1,5 +1,6 @@
 # LunarDome
-Code for Dose calculation of ICRP145 and IcruSphere shielded with regolith dome
+Code for Dose calculation of ICRP145 and IcruSphere shielded with regolith dome.
+Contact point: sylvain.blunier@gmail.com
 
 ## Running Geant4 simulations
 
