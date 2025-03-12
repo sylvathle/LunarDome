@@ -145,7 +145,7 @@ def plot_icru_contributions(df_ICRU):
   print ("_______________________________________________________")
   
   
-  ax[0].set_ylabel("Contribution from primaries (%)",fontsize=15)
+  ax[0].set_ylabel("Contribution from primaries + secondaries (%)",fontsize=15)
   ax[0].set_xlabel("1.136 $g/cm^2$ Al + regolith ($g/cm^2$)",fontsize=15)
   ax[1].set_xlabel("1.136 $g/cm^2$ Al + regolith ($g/cm^2$)",fontsize=15)
   ax[1].set_ylabel("Normalized dose equivalent",fontsize=15)
@@ -218,7 +218,7 @@ def nsimul_particles(df_ICRP,df_ICRU):
     df_nparticles.insert(0,'Z',[toZA[p][0] for p in parts])
     df_nparticles = df_nparticles.transpose()
     
-    df_nparticles.to_csv("data/number_sim_particles.csv",index=True)
+    df_nparticles.to_csv("../figures/number_sim_particles.csv",index=True)
 
 def  print_icrp_stats(df_icrp):
 
@@ -271,7 +271,7 @@ def  print_icrp_stats(df_icrp):
 def plot_DE_Q_Particles(df_ICRP):
 
 
-    df_weights = pd.read_csv("data/weightParticles.csv")
+    df_weights = pd.read_csv("weightParticles.csv")
     df_weights = df_weights.sort_values(by="Z")
     sumweights = df_weights["wP"].sum()
     df_weights["percentwP"] = df_weights["wP"]/sumweights*100
@@ -361,14 +361,14 @@ def plot_DE_Q_Particles(df_ICRP):
         #ax[0].annotate(p, xy=(toZA[p][0], part_ytxt[ip]), xytext=(toZA[p][0]-0.12,part_ytxt[ip]*1.25),fontsize=13)
         ax[0].annotate(p, xy=(toZA[p][0], h), xytext=(toZA[p][0]-0.12,h*1.50),fontsize=13)
     
-    ax[0].set_ylabel("Contribution to effective dose (%)",fontsize=15)
+    ax[0].set_ylabel("Contribution to effective dose equivalent (%)",fontsize=15)
     ax[0].set_xlabel("Particle charge (Z)",fontsize=15)
     ax[0].set_yscale("log")
     
     #ax[1].plot(dfp2["Z"],dfp2["Q"],label="Al + 45 $g.cm^{-2}$ regolith",color="red")
     #ax[1].fill_between(dfp2["Z"],y1=dfp2["Q"]-dfp2["Q_low_std"]/2,y2=dfp2["Q"]+dfp2["Q_up_std"]/2,color="red",alpha=0.2)
     #ax[1].fill_between(dfp3["Z"],y1=dfp3["Q"]-dfp3["Q_low_std"]/2,y2=dfp3["Q"]+dfp3["Q_up_std"]/2,color="green",alpha=0.2)
-    ax[1].set_ylabel("Body-averaged mean quality factor",fontsize=15)
+    ax[1].set_ylabel("Body-averaged quality factor",fontsize=15)
     ax[1].set_xlabel("Particle charge (Z)",fontsize=15)
     ax[1].grid(True)
     
@@ -678,11 +678,11 @@ def model_dose(df_ICRP,df_ICRU):
             print ("\t",xxx[i],yyyede[i],yyyede[i]/yyyede0)
             earthlevel=False
 
-    df_matthiae = pd.read_csv("data/EDE_matthiae.csv")
+    df_matthiae = pd.read_csv("EDE_matthiae.csv")
     df_matthiae["EDE"] = df_matthiae["EDE"]*365
     df_matthiae["std"] = df_matthiae["std"]*365
 
-    df_dobynde = pd.read_csv("data/DE_Dobynde.csv")
+    df_dobynde = pd.read_csv("DE_Dobynde.csv")
     df_dobynde["DE"] = df_dobynde["DE"]*10
     diff_depth = [0]
     depth = df_dobynde["depth"].tolist()
@@ -697,6 +697,9 @@ def model_dose(df_ICRP,df_ICRU):
     df_dobynde["athick"] = df_dobynde["density"] * df_dobynde["diff_depth"]
     df_dobynde["athick"] = df_dobynde["athick"].cumsum()
 
+    df_akisheva = pd.read_csv("ED_akisheva.csv")
+    df_akisheva["ED"] = df_akisheva["ED"]*2
+
     yyede = [func(x,*popt) for x in xx]
     
     ax.errorbar(xthick,yde,yerr=[df_tot["DE_low"],df_tot["DE_up"]],linestyle='',marker='o', markersize=4,color='darkred',label="DE IFHP")
@@ -708,19 +711,21 @@ def model_dose(df_ICRP,df_ICRU):
 
 
 
+
     ax.errorbar(xthick,df_tot["Dose"],yerr=[df_tot["Dose_low"],df_tot["Dose_up"]],linestyle='',marker='o', markersize=4,color='orange',label="Absorbed dose IFHP")
 
     ax.errorbar(xthick_icru,df_icrug["DE"],yerr=[df_icrug["DE_low_std"],df_icrug["DE_up_std"]],linestyle='',markersize=3,marker='s',label="DE ICRU sphere",color='darkblue')
     ax.errorbar(xthick_icru,df_icrug["Dose"],yerr=[df_icrug["Dose_low_std"],df_icrug["Dose_up_std"]],linestyle='',markersize=3,marker='s',label="Absorbed Doses ICRU sphere",color='darkslategray')
     ax.plot(xxicru,yyicru,linestyle="-",color="b",label="Fit DE ICRU sphere")
 
-    ax.plot(df_matthiae["thick(g/cm2)"],df_matthiae["EDE"],linestyle='',marker='x', markersize=5,color='magenta',label="DE (Matthiä & Berger 2024)")
-    ax.plot(df_dobynde["athick"],df_dobynde["DE"],linestyle='-',marker='', color='cyan',label="DE (Dobynde & Guo 2024)")
+    ax.plot(df_matthiae["thick(g/cm2)"],df_matthiae["EDE"],linestyle='',marker='^', markersize=9,color='magenta',label="DE (Matthiä & Berger 2024)")
+    ax.plot(df_dobynde["athick"],df_dobynde["DE"],linestyle='--',marker='', color='cyan',label="EDE (Dobynde & Guo 2024)")
+    ax.plot(df_akisheva["thick"],df_akisheva["ED"],linestyle='',marker='s', color='orange',label="ED (Akisheva & Gourinat 2021)")
 
     ax.legend(ncol=2,fontsize=13)
     #ax.set_xlabel("1.136 $g/cm^2$ Al + regolith ($g/cm^2$)",fontsize=15)
     ax.set_xlabel("Inner shield + regolith ($g/cm^2$)",fontsize=15)
-    ax.set_ylabel("doses ($mSv/y$) or (mGy/y)",fontsize=15)
+    ax.set_ylabel("Doses (mSv/y) or (mGy/y)",fontsize=15)
     plt.xticks(fontsize=13)
     ax.grid(True)
     
