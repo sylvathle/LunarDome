@@ -20,6 +20,7 @@ After cloning the project, the usual Geant4 C++ commands must be run:
 ```
 cd LunarDome
 mkdir build
+cd build
 cmake ..
 make -j8
 ```
